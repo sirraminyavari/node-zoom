@@ -15,31 +15,33 @@ app.use(cookieParser());
 
 app.all('/', async (req, res) => {
   try {
-    //zoom.connection('192.83.186.170:210/INNOPAC')
-    zoom.connection('z3950.nlai.ir:210')
+    console.log("search starting...");
+    zoom.connection('192.83.186.170:210/INNOPAC')
+    //zoom.connection('52.214.208.46:210/INNOPAC')
       .set('preferredRecordSyntax', 'unimarc')
       .query('prefix', '@attr 1=7 ' + '9780073383095')
       .createReadStream()
       .on('data', function (record) {
+        console.log("response received :)");
         res.send(record.json);
         //console.log(record.json, record.xml, record.raw);
       })
-      .on('close', function(close) {
+      .on('close', function (close) {
         //process.exit(1);
       });
-  } catch(e) {
+  } catch (e) {
     console.error(e);
     res.send("an error occurred :(");
   }
 });
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
